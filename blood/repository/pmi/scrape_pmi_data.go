@@ -1,7 +1,6 @@
 package pmi
 
 import (
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -22,7 +21,6 @@ func ClientRequestUrl(params io.Reader, method string, url string) (doc *goquery
 
 	defer res.Body.Close()
 
-	fmt.Println(res.StatusCode)
 	if res.StatusCode != http.StatusOK {
 		return
 	}

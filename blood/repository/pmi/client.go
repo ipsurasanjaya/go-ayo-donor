@@ -2,7 +2,6 @@ package pmi
 
 import (
 	"errors"
-	"fmt"
 	"go-ayo-donor/model/domain"
 	"io"
 
@@ -29,7 +28,6 @@ func (client *clientPmiScraper) GetBloodSupplyByUdd(in io.Reader, pmiScrapperOp 
 		return selector, errors.New("PMI operation not found")
 	}
 	curl, err := ClientRequestUrl(in, pmiReq.method, pmiReq.link)
-	fmt.Println("here")
 	if err != nil {
 		return
 	}

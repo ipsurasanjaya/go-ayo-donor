@@ -25,7 +25,7 @@ func ClientRequestUrl(params io.Reader, method string, url string) (doc *goquery
 		return
 	}
 
-	doc, err = DocumentReaderInit(res.Body)
+	doc, err = documentReaderInit(res.Body)
 	if err != nil {
 		return
 	}
@@ -33,7 +33,7 @@ func ClientRequestUrl(params io.Reader, method string, url string) (doc *goquery
 	return
 }
 
-func DocumentReaderInit(body io.Reader) (*goquery.Document, error) {
+func documentReaderInit(body io.Reader) (*goquery.Document, error) {
 	doc, err := goquery.NewDocumentFromReader(body)
 	return doc, err
 }

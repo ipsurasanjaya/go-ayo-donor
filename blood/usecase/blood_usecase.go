@@ -1,6 +1,7 @@
 package usecase
 
 import (
+	"context"
 	"go-ayo-donor/blood/repository/pmi"
 	"go-ayo-donor/model/domain"
 	"io"
@@ -12,8 +13,8 @@ var bloodType = []string{
 }
 
 type BloodUsecase interface {
-	GetBloodSupplyByUdd(params io.Reader) (out []domain.GetBloodSupplyByUddOut, err error)
-	GetBloodSupplies() (out []domain.GetBloodSuppliesOut, err error)
+	GetBloodSupplyByUdd(ctx context.Context, param io.Reader) (out []domain.GetBloodSupplyByUddOut, err error)
+	GetBloodSupplies(ctx context.Context) (out []domain.GetBloodSuppliesOut, err error)
 }
 
 type bloodUsecase struct {
@@ -26,13 +27,17 @@ func NewUsecase(clientPmi pmi.ClientPmiScraper) BloodUsecase {
 	}
 }
 
-func (b *bloodUsecase) GetBloodSupplyByUdd(params io.Reader) (out []domain.GetBloodSupplyByUddOut, err error) {
+func (b *bloodUsecase) GetBloodSupplyByUdd(ctx context.Context, params io.Reader) (out []domain.GetBloodSupplyByUddOut, err error) {
 	var (
 		stock   domain.GetBloodSupplyByUddOut
 		counter int
 	)
 
-	selector, err := b.ClientPmi.GetBloodSupplyByUdd(params, domain.GetBloodSupplyByUdd)
+	selector, err := b.ClientPmi.GetBloodSupplyByUdd(
+		ctx,
+		params,
+		domain.GetBloodSupplyByUdd,
+	)
 	if err != nil {
 		return
 	}
@@ -56,14 +61,14 @@ func (b *bloodUsecase) GetBloodSupplyByUdd(params io.Reader) (out []domain.GetBl
 	return
 }
 
-func (b *bloodUsecase) GetBloodSupplies() (out []domain.GetBloodSuppliesOut, err error) {
+func (b *bloodUsecase) GetBloodSupplies(ctx context.Context) (out []domain.GetBloodSuppliesOut, err error) {
 	var (
 		status      bool
 		data        string
 		scrapedData []string
 	)
 
-	script, err := b.ClientPmi.GetBloodSupplies(domain.GetBloodSupplies)
+	script, err := b.ClientPmi.GetBloodSupplies(ctx, domain.GetBloodSupplies)
 	if err != nil {
 		return
 	}

@@ -1,13 +1,14 @@
 package main
 
 import (
+	"fmt"
 	handler "go-ayo-donor/blood/delivery/http"
 	"go-ayo-donor/blood/repository/pmi"
 	"go-ayo-donor/blood/usecase"
 	"log"
-	"net/http"
 
-	"github.com/julienschmidt/httprouter"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
 )
 
 const (
@@ -15,22 +16,27 @@ const (
 )
 
 func main() {
-	pmiClient := pmi.NewClient()
-	bloodUsecase := usecase.NewUsecase(pmiClient)
-	bloodHandler := handler.NewHandler(bloodUsecase)
+	e := echo.New()
 
-	router := httprouter.New()
-	router.GET("/api/v1/supplies", bloodHandler.GetBloodSupplies)
-	router.GET("/api/v1/supplies/:udd", bloodHandler.GetBloodSupplyByUdd)
+	e.Use(middleware.Logger())
+	e.Use(middleware.Recover())
 
-	server := http.Server{
-		Addr:    ":" + webPort,
-		Handler: router,
+	pc := pmi.NewClient()
+	buc := usecase.NewUsecase(pc)
+
+	v1 := e.Group("/v1")
+	{
+		api := v1.Group("/api")
+		{
+			bh := handler.NewHandler(buc)
+			bloodGroup := api.Group("/bloods")
+
+			bloodGroup.GET("/supplies", bh.GetBloodSupplies)
+			bloodGroup.GET("/supplies/:udd", bh.GetBloodSupplyByUdd)
+		}
 	}
 
-	log.Println("Start listening to server!")
-	err := server.ListenAndServe()
-	if err != nil {
-		log.Fatal(err)
+	if err := e.Start(fmt.Sprintf(":%d", 8080)); err != nil {
+		log.Fatal("failed to start the server")
 	}
 }

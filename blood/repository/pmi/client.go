@@ -1,6 +1,7 @@
 package pmi
 
 import (
+	"context"
 	"errors"
 	"go-ayo-donor/model/domain"
 	"io"
@@ -13,8 +14,8 @@ type (
 	}
 
 	ClientPmiScraper interface {
-		GetBloodSupplies(pmiScrapperOp domain.PmiScrapperRequest) (script string, err error)
-		GetBloodSupplyByUdd(in io.Reader, pmiScrapperOp domain.PmiScrapperRequest) (selector *goquery.Selection, err error)
+		GetBloodSupplies(ctx context.Context, pmiScrapperOp domain.PmiScrapperRequest) (script string, err error)
+		GetBloodSupplyByUdd(ctx context.Context, in io.Reader, pmiScrapperOp domain.PmiScrapperRequest) (selector *goquery.Selection, err error)
 	}
 )
 
@@ -22,7 +23,7 @@ func NewClient() ClientPmiScraper {
 	return &clientPmiScraper{}
 }
 
-func (client *clientPmiScraper) GetBloodSupplyByUdd(in io.Reader, pmiScrapperOp domain.PmiScrapperRequest) (selector *goquery.Selection, err error) {
+func (client *clientPmiScraper) GetBloodSupplyByUdd(ctx context.Context, in io.Reader, pmiScrapperOp domain.PmiScrapperRequest) (selector *goquery.Selection, err error) {
 	pmiReq, ok := pmiRequestMap[pmiScrapperOp]
 	if !ok {
 		return selector, errors.New("PMI operation not found")
@@ -39,7 +40,7 @@ func (client *clientPmiScraper) GetBloodSupplyByUdd(in io.Reader, pmiScrapperOp 
 	return
 }
 
-func (client *clientPmiScraper) GetBloodSupplies(pmiScrapperOp domain.PmiScrapperRequest) (script string, err error) {
+func (client *clientPmiScraper) GetBloodSupplies(ctx context.Context, pmiScrapperOp domain.PmiScrapperRequest) (script string, err error) {
 	pmiReq, ok := pmiRequestMap[pmiScrapperOp]
 	if !ok {
 		return script, errors.New("PMI operation not found")

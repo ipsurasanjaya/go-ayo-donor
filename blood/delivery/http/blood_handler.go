@@ -6,17 +6,12 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/julienschmidt/httprouter"
+	"github.com/labstack/echo/v4"
 )
 
 type (
 	bloodHandler struct {
 		BloodUsecase usecase.BloodUsecase
-	}
-
-	BloodHandler interface {
-		GetBloodSupplyByUdd(w http.ResponseWriter, r *http.Request, params httprouter.Params)
-		GetBloodSupplies(w http.ResponseWriter, r *http.Request, params httprouter.Params)
 	}
 
 	GetBloodSupplyByUddResponse struct {
@@ -30,20 +25,25 @@ type (
 	}
 )
 
-func NewHandler(usecase usecase.BloodUsecase) BloodHandler {
+func NewHandler(usecase usecase.BloodUsecase) *bloodHandler {
 	return &bloodHandler{
 		BloodUsecase: usecase,
 	}
 }
 
-func (handler *bloodHandler) GetBloodSupplyByUdd(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	udd := params.ByName("udd")
+func (bh *bloodHandler) GetBloodSupplyByUdd(c echo.Context) error {
+	ctx := c.Request().Context()
+
+	udd := c.Param("udd")
 	uddReader := strings.NewReader("udd=" + udd)
 
-	out, err := handler.BloodUsecase.GetBloodSupplyByUdd(uddReader)
+	out, err := bh.BloodUsecase.GetBloodSupplyByUdd(ctx, uddReader)
 	if err != nil {
-		helper.ResponseError(w, err.Error(), http.StatusUnprocessableEntity)
-		return
+		return helper.ErrorResponse(
+			c,
+			http.StatusInternalServerError,
+			"failed to get blood supply by udd",
+		)
 	}
 
 	var supplies []GetBloodSupplyByUddResponse
@@ -51,14 +51,18 @@ func (handler *bloodHandler) GetBloodSupplyByUdd(w http.ResponseWriter, r *http.
 		supplies = append(supplies, GetBloodSupplyByUddResponse(v))
 	}
 
-	helper.ResponseSuccess(w, "Success get supply by UDD", supplies)
+	return helper.SuccessResponse(c, http.StatusOK, supplies)
 }
 
-func (handler *bloodHandler) GetBloodSupplies(w http.ResponseWriter, r *http.Request, params httprouter.Params) {
-	out, err := handler.BloodUsecase.GetBloodSupplies()
+func (handler *bloodHandler) GetBloodSupplies(c echo.Context) error {
+	ctx := c.Request().Context()
+	out, err := handler.BloodUsecase.GetBloodSupplies(ctx)
 	if err != nil {
-		helper.ResponseError(w, err.Error(), http.StatusUnprocessableEntity)
-		return
+		return helper.ErrorResponse(
+			c,
+			http.StatusBadRequest,
+			"failed to get blood supplies",
+		)
 	}
 
 	var supplies []GetBloodSupplies
@@ -66,5 +70,5 @@ func (handler *bloodHandler) GetBloodSupplies(w http.ResponseWriter, r *http.Req
 		supplies = append(supplies, GetBloodSupplies(v))
 	}
 
-	helper.ResponseSuccess(w, "Success get blood supplies", supplies)
+	return helper.SuccessResponse(c, http.StatusOK, supplies)
 }

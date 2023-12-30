@@ -7,7 +7,7 @@ import (
 
 type (
 	LinkAndMethod struct {
-		Link   string
+		Url    string
 		Method string
 	}
 
@@ -17,15 +17,19 @@ type (
 var (
 	PmiRequestMap = pmiScrapperOp{
 		domain.GetBloodSupplyByUdd: LinkAndMethod{
-			Link:   "https://ayodonor.pmi.or.id/?page=stok",
+			Url:    "https://ayodonor.pmi.or.id/?page=stok",
 			Method: http.MethodPost,
 		},
 		domain.GetBloodSupplies: LinkAndMethod{
-			Link:   "https://ayodonor.pmi.or.id/#",
+			Url:    "https://ayodonor.pmi.or.id/#",
 			Method: http.MethodGet,
 		},
 		domain.GetMobileDonor: LinkAndMethod{
-			Link:   "https://ayodonor.pmi.or.id",
+			Url:    "https://ayodonor.pmi.or.id",
+			Method: http.MethodGet,
+		},
+		domain.GetMobileDonorByProvince: LinkAndMethod{
+			Url:    "https://ayodonor.pmi.or.id/?page=mobile&module=MjAyMy0xMi0zMA==&prov=",
 			Method: http.MethodGet,
 		},
 	}

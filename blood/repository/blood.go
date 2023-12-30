@@ -30,7 +30,7 @@ func (client *clientBloodScraper) GetByUdd(ctx context.Context, in io.Reader, pm
 	if !ok {
 		return selector, errors.New("PMI operation not found")
 	}
-	curl, err := helper.ClientRequestUrl(in, pmiReq.Method, pmiReq.Link)
+	curl, err := helper.ClientRequestUrl(in, pmiReq.Method, pmiReq.Url)
 	if err != nil {
 		return
 	}
@@ -48,7 +48,7 @@ func (client *clientBloodScraper) Get(ctx context.Context, pmiScraperOp domain.P
 		return script, errors.New("PMI operation not found")
 	}
 
-	curl, err := helper.ClientRequestUrl(nil, pmiReq.Method, pmiReq.Link)
+	curl, err := helper.ClientRequestUrl(nil, pmiReq.Method, pmiReq.Url)
 	if err != nil {
 		return
 	}

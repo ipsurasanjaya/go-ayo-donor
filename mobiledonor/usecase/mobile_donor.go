@@ -16,6 +16,8 @@ type mobileDonorUsecase struct {
 	client repository.ClientMobileScraper
 }
 
+var _ MobileDonorUsecase = (*mobileDonorUsecase)(nil)
+
 func NewUsecase(client repository.ClientMobileScraper) *mobileDonorUsecase {
 	return &mobileDonorUsecase{
 		client: client,

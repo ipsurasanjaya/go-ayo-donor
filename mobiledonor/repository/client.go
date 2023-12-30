@@ -14,7 +14,7 @@ type (
 	clientMobileScraper struct{}
 
 	ClientMobileScraper interface {
-		Get(ctx context.Context) error
+		Get(ctx context.Context, pmiScraperOp domain.PmiScrapperRequest) (*goquery.Selection, error)
 	}
 )
 

@@ -18,12 +18,12 @@ type BloodUsecase interface {
 }
 
 type bloodUsecase struct {
-	ClientPmi repository.ClientBloodScraper
+	client repository.ClientBloodScraper
 }
 
-func NewUsecase(clientPmi repository.ClientBloodScraper) BloodUsecase {
+func NewUsecase(client repository.ClientBloodScraper) *bloodUsecase {
 	return &bloodUsecase{
-		ClientPmi: clientPmi,
+		client: client,
 	}
 }
 
@@ -33,7 +33,7 @@ func (b *bloodUsecase) GetByUdd(ctx context.Context, params io.Reader) (out []do
 		counter int
 	)
 
-	selector, err := b.ClientPmi.GetByUdd(
+	selector, err := b.client.GetByUdd(
 		ctx,
 		params,
 		domain.GetBloodSupplyByUdd,
@@ -68,7 +68,7 @@ func (b *bloodUsecase) Get(ctx context.Context) (out []domain.GetBloodSuppliesOu
 		scrapedData []string
 	)
 
-	script, err := b.ClientPmi.Get(ctx, domain.GetBloodSupplies)
+	script, err := b.client.Get(ctx, domain.GetBloodSupplies)
 	if err != nil {
 		return
 	}

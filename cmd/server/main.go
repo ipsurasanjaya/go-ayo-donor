@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
-	handler "go-ayo-donor/blood/delivery/http"
+	bHandler "go-ayo-donor/blood/delivery/http"
 	bRepo "go-ayo-donor/blood/repository"
 	bUsecase "go-ayo-donor/blood/usecase"
+	mHandler "go-ayo-donor/mobiledonor/delivery/http"
 	mRepo "go-ayo-donor/mobiledonor/repository"
 	mUsecase "go-ayo-donor/mobiledonor/usecase"
 	"log"
@@ -27,17 +28,21 @@ func main() {
 	buc := bUsecase.NewUsecase(bc)
 
 	pc := mRepo.NewClient()
-	mUsecase.NewUsecase(pc)
+	muc := mUsecase.NewUsecase(pc)
 
 	v1 := e.Group("/v1")
 	{
 		api := v1.Group("/api")
 		{
-			bh := handler.NewHandler(buc)
+			bh := bHandler.NewHandler(buc)
 			bloodGroup := api.Group("/bloods")
 
 			bloodGroup.GET("/supplies", bh.GetBloodSupplies)
 			bloodGroup.GET("/supplies/:udd", bh.GetBloodSupplyByUdd)
+
+			mh := mHandler.NewHandler(muc)
+			mobileGroup := api.Group("/mobiles")
+			mobileGroup.GET("", mh.Get)
 		}
 	}
 

@@ -37,7 +37,7 @@ func (bh *bloodHandler) GetBloodSupplyByUdd(c echo.Context) error {
 	udd := c.Param("udd")
 	uddReader := strings.NewReader("udd=" + udd)
 
-	out, err := bh.BloodUsecase.GetBloodSupplyByUdd(ctx, uddReader)
+	out, err := bh.BloodUsecase.GetByUdd(ctx, uddReader)
 	if err != nil {
 		return helper.ErrorResponse(
 			c,
@@ -56,7 +56,7 @@ func (bh *bloodHandler) GetBloodSupplyByUdd(c echo.Context) error {
 
 func (handler *bloodHandler) GetBloodSupplies(c echo.Context) error {
 	ctx := c.Request().Context()
-	out, err := handler.BloodUsecase.GetBloodSupplies(ctx)
+	out, err := handler.BloodUsecase.Get(ctx)
 	if err != nil {
 		return helper.ErrorResponse(
 			c,

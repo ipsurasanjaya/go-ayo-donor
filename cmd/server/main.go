@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	handler "go-ayo-donor/blood/delivery/http"
-	"go-ayo-donor/blood/repository/pmi"
+	bRepo "go-ayo-donor/blood/repository"
 	"go-ayo-donor/blood/usecase"
+	mRepo "go-ayo-donor/mobiledonor/repository"
+	"go-ayo-donor/model/domain"
 	"log"
 
 	"github.com/labstack/echo/v4"
@@ -21,8 +24,12 @@ func main() {
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 
-	pc := pmi.NewClient()
-	buc := usecase.NewUsecase(pc)
+	bc := bRepo.NewClient()
+	buc := usecase.NewUsecase(bc)
+
+	pc := mRepo.NewClient()
+
+	pc.Get(context.Background(), domain.GetMobileDonor)
 
 	v1 := e.Group("/v1")
 	{

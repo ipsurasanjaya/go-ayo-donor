@@ -6,4 +6,5 @@ const (
 	UndifinedPmiScrapperRequest PmiScrapperRequest = iota
 	GetBloodSupplyByUdd
 	GetBloodSupplies
+	GetMobileDonor
 )

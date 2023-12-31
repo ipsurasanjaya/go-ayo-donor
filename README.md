@@ -16,7 +16,11 @@ go-donor-darah is an app that provides an API related to blood donation. Service
 <summary><b>View table of contents</b></summary><br/>
 
 - [Routes](#routes)
-
+- [Current Limitations](#current-limitations)
+- [UDD (Unit Donor Darah) Code List](#udd-unit-donor-darah-code-list)
+- [Province List](#provinces-list)
+- [Contributing](#contributing)
+- [License](#license)
 </details>
 
 ---
@@ -29,8 +33,9 @@ go-donor-darah is an app that provides an API related to blood donation. Service
 
 ## Current Limitations
 1. The performance of all APIs is slow because it is very dependent on the performance of PMI's official site.
-2. Currently get bood supplies by UDD does not support inputting the name of the Kabupaten or City. 
-3. limited UDD data that has been collected
+2. Currently get bood supplies by UDD endpoint does not support inputting the name of the Kabupaten or City (should be inputting the UDD). 
+3. limited UDD data that has been collected.
+4. Currently get bood mobile by province endpoint should input the exact [province](#provinces-list) name. e.g. this endpoint will return error when receiving input Sumbar (an acronym for West Sumatra)
 
 ## UDD (Unit Donor Darah) Code List
 | UDD                             | Name                                |

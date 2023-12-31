@@ -43,6 +43,7 @@ func main() {
 			mh := mHandler.NewHandler(muc)
 			mobileGroup := api.Group("/mobiles")
 			mobileGroup.GET("", mh.Get)
+			mobileGroup.GET("/:province", mh.GetByProvince)
 		}
 	}
 

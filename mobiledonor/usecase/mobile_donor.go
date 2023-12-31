@@ -69,6 +69,11 @@ func (m *mobileDonorUsecase) GetByProvince(
 	out := []domain.GetMobileDonorByProvinceOut{}
 	var i int = 1
 	node := selector.Nodes
+
+	if len(node) == 0 {
+		return nil, domain.ErrDataNotFound
+	}
+
 	for i < len(node) {
 		attr := node[i].LastChild.Attr
 		var url string
@@ -85,7 +90,6 @@ func (m *mobileDonorUsecase) GetByProvince(
 		md := domain.GetMobileDonorByProvinceOut{
 			InstanceName: node[i].FirstChild.Data,
 			GoogleMapURL: url,
-			Address:      node[i+1].FirstChild.Data,
 			Hour:         node[i+2].FirstChild.Data,
 			DonorPlan:    dp,
 		}

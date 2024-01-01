@@ -2,11 +2,11 @@
 
 <div align='center'>
 
-![go-donor-darah](./header.png)
+![go-ayo-donor](./header.png)
 
 </div>
 
-go-donor-darah is an app that provides an API related to blood donation. Service data from [Palang Merah Indonesia](https://ayodonor.pmi.or.id) official site as JSON API.
+go-ayo-donor is an app that provides an API related to blood donation. Service data from [Palang Merah Indonesia](https://ayodonor.pmi.or.id) official site as JSON API.
 
 > I use this app as a personal project and I thought maybe this API could be useful for someone else, so I decided to make this app open source.
 

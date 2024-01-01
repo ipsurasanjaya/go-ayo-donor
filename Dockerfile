@@ -1,7 +1,13 @@
 FROM golang:alpine
-RUN mkdir /app
-ADD . /app
+
+RUN apk update && apk add --no-cache git
+
 WORKDIR /app
-RUN go clean --modcache
-RUN go build -o main .
-CMD ["/app/main"]
+
+COPY . .
+
+RUN go mod tidy
+
+RUN go build -o binary
+
+ENTRYPOINT ["/app/binary"]

@@ -61,7 +61,7 @@ This tables shows the list of the provinces and its PMI mobile data readiness.
 
 :white_check_mark: : ready
 
-:x: : not ready
+:x: : not ready 
 
 | Province                        | Status                              |
 | ------------------------------- | ----------------------------------- |

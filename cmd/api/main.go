@@ -30,7 +30,7 @@ func main() {
 		Port:     "5432",
 		Schema:   "public",
 		DBName:   "go_ayo_donor",
-		User:     "suras",
+		User:     "",
 		SSLMode:  "disable",
 		TimeZone: "Asia/Jakarta",
 	}

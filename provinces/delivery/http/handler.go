@@ -51,6 +51,14 @@ func (ph *handler) Get(c echo.Context) error {
 		)
 	}
 
+	if len(out) == 0 {
+		return helper.ErrorResponse(
+			c,
+			http.StatusBadRequest,
+			"bad request, the data is not found",
+		)
+	}
+
 	res := []GetProvinceRes{}
 	for _, v := range out {
 		res = append(res, GetProvinceRes(v))

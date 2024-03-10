@@ -10,6 +10,9 @@ import (
 	mUsecase "go-ayo-donor/mobiledonor/usecase"
 	"go-ayo-donor/model/domain"
 	"go-ayo-donor/pql"
+	pHandler "go-ayo-donor/provinces/delivery/http"
+	pRepo "go-ayo-donor/provinces/repository"
+	pUsecase "go-ayo-donor/provinces/usecase"
 	"log"
 
 	"github.com/labstack/echo/v4"
@@ -17,7 +20,7 @@ import (
 )
 
 const (
-	webPort = "8080"
+	webPort = 8080
 )
 
 func main() {
@@ -31,7 +34,7 @@ func main() {
 		SSLMode:  "disable",
 		TimeZone: "Asia/Jakarta",
 	}
-	_, err := pql.CreateSQLDB(cfg)
+	db, err := pql.CreateSQLDB(cfg)
 	if err != nil {
 		log.Fatalf("error %v when creating psql DB", err)
 	}
@@ -44,6 +47,9 @@ func main() {
 
 	pc := mRepo.NewClient()
 	muc := mUsecase.NewUsecase(pc)
+
+	pr := pRepo.NewProvincesRepo(db)
+	puc := pUsecase.NewUsecase(pr)
 
 	v1 := e.Group("/v1")
 	{
@@ -59,10 +65,14 @@ func main() {
 			mobileGroup := api.Group("/mobiles")
 			mobileGroup.GET("", mh.Get)
 			mobileGroup.GET("/:province", mh.GetByProvince)
+
+			ph := pHandler.NewHandler(puc)
+			provinceGroup := api.Group("/provinces")
+			provinceGroup.GET("", ph.Get)
 		}
 	}
 
-	if err := e.Start(fmt.Sprintf(":%d", 8080)); err != nil {
+	if err := e.Start(fmt.Sprintf(":%d", webPort)); err != nil {
 		log.Fatal("failed to start the server")
 	}
 }

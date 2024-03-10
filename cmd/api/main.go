@@ -8,6 +8,8 @@ import (
 	mHandler "go-ayo-donor/mobiledonor/delivery/http"
 	mRepo "go-ayo-donor/mobiledonor/repository"
 	mUsecase "go-ayo-donor/mobiledonor/usecase"
+	"go-ayo-donor/model/domain"
+	"go-ayo-donor/pql"
 	"log"
 
 	"github.com/labstack/echo/v4"
@@ -20,6 +22,19 @@ const (
 
 func main() {
 	e := echo.New()
+	cfg := domain.Config{
+		Host:     "localhost",
+		Port:     "5432",
+		Schema:   "public",
+		DBName:   "go_ayo_donor",
+		User:     "suras",
+		SSLMode:  "disable",
+		TimeZone: "Asia/Jakarta",
+	}
+	_, err := pql.CreateSQLDB(cfg)
+	if err != nil {
+		log.Fatalf("error %v when creating psql DB", err)
+	}
 
 	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())

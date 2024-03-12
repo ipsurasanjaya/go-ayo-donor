@@ -26,5 +26,14 @@ func (p *provinceUsecase) Get(
 	ctx context.Context,
 	in domain.GetProvinceIn,
 ) ([]domain.GetProvinceOut, error) {
-	return p.repo.Get(ctx, in)
+	out, err := p.repo.Get(ctx, in)
+	if err != nil {
+		return nil, err
+	}
+
+	if len(out) == 0 {
+		return nil, domain.ErrDataNotFound
+	}
+
+	return out, nil
 }

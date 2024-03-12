@@ -4,38 +4,40 @@ import (
 	"errors"
 	"go-ayo-donor/helper"
 	"go-ayo-donor/model/domain"
-	"go-ayo-donor/provinces/usecase"
+	"go-ayo-donor/transfusionunits/usecase"
+	"log"
 	"net/http"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
 
 type (
-	GetProvinceReq struct {
-		Limit  int64  `query:"limit"`
-		Search string `query:"search"`
-	}
-	GetProvinceRes struct {
+	GetByProvinceIDRes struct {
 		ID   int64  `json:"id"`
 		Name string `json:"name"`
+		Code string `json:"code"`
 	}
 )
 
 type handler struct {
-	puc usecase.ProvinceUsecase
+	tuc usecase.TransfusionUnitUsecase
 }
 
-func NewHandler(puc usecase.ProvinceUsecase) *handler {
+func NewHandler(tuc usecase.TransfusionUnitUsecase) *handler {
 	return &handler{
-		puc: puc,
+		tuc: tuc,
 	}
 }
 
-func (ph *handler) Get(c echo.Context) error {
+func (th *handler) GetByProvinceID(c echo.Context) error {
 	ctx := c.Request().Context()
-	req := GetProvinceReq{}
 
-	if err := c.Bind(&req); err != nil {
+	provinceID := c.Param("id")
+	log.Println(provinceID)
+
+	provinceIDInt, err := strconv.Atoi(provinceID)
+	if err != nil {
 		return helper.ErrorResponse(
 			c,
 			http.StatusBadRequest,
@@ -43,7 +45,7 @@ func (ph *handler) Get(c echo.Context) error {
 		)
 	}
 
-	out, err := ph.puc.Get(ctx, domain.GetProvinceIn(req))
+	out, err := th.tuc.GetByProvinceID(ctx, int64(provinceIDInt))
 	if err != nil {
 		if errors.Is(err, domain.ErrDataNotFound) {
 			return helper.ErrorResponse(
@@ -52,16 +54,18 @@ func (ph *handler) Get(c echo.Context) error {
 				"not found, the data is not found",
 			)
 		}
+
 		return helper.ErrorResponse(
 			c,
 			http.StatusInternalServerError,
-			"internal server error",
+			"internal server error, failed get province by id",
 		)
 	}
 
-	res := []GetProvinceRes{}
+	res := []GetByProvinceIDRes{}
+
 	for _, v := range out {
-		res = append(res, GetProvinceRes(v))
+		res = append(res, GetByProvinceIDRes(v))
 	}
 
 	return helper.SuccessResponse(

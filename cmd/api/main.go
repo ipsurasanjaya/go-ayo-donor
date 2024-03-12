@@ -13,6 +13,10 @@ import (
 	pHandler "go-ayo-donor/provinces/delivery/http"
 	pRepo "go-ayo-donor/provinces/repository"
 	pUsecase "go-ayo-donor/provinces/usecase"
+
+	tHandler "go-ayo-donor/transfusionunits/delivery/http"
+	tRepo "go-ayo-donor/transfusionunits/repository"
+	tUsecase "go-ayo-donor/transfusionunits/usecase"
 	"log"
 
 	"github.com/labstack/echo/v4"
@@ -30,7 +34,7 @@ func main() {
 		Port:     "5432",
 		Schema:   "public",
 		DBName:   "go_ayo_donor",
-		User:     "",
+		User:     "suras",
 		SSLMode:  "disable",
 		TimeZone: "Asia/Jakarta",
 	}
@@ -51,6 +55,9 @@ func main() {
 	pr := pRepo.NewProvincesRepo(db)
 	puc := pUsecase.NewUsecase(pr)
 
+	tr := tRepo.NewTransfusionUnitRepo(db)
+	tuc := tUsecase.NewUsecase(tr)
+
 	v1 := e.Group("/v1")
 	{
 		api := v1.Group("/api")
@@ -69,6 +76,9 @@ func main() {
 			ph := pHandler.NewHandler(puc)
 			provinceGroup := api.Group("/provinces")
 			provinceGroup.GET("", ph.Get)
+
+			th := tHandler.NewHandler(tuc)
+			provinceGroup.GET("/:id/transfusion-units", th.GetByProvinceID)
 		}
 	}
 

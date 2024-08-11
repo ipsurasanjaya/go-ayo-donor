@@ -29,15 +29,7 @@ const (
 
 func main() {
 	e := echo.New()
-	cfg := domain.Config{
-		Host:     "localhost",
-		Port:     "5432",
-		Schema:   "public",
-		DBName:   "go_ayo_donor",
-		User:     "suras",
-		SSLMode:  "disable",
-		TimeZone: "Asia/Jakarta",
-	}
+	cfg := domain.Config{}
 	db, err := pql.CreateSQLDB(cfg)
 	if err != nil {
 		log.Fatalf("error %v when creating psql DB", err)
